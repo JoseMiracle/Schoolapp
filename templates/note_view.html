@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'js/jquery-3.6.1.js' %}">
+</head>
+<body>
+            {{note_details.file_title}}
+             <br>
+    <a href="{{note_details.subject_files.url}}" target="blank">Download note</a> <br> <br>
+        {% if request.user.is_staff %}
+            <form action="{% url 'delete_file' note_details.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Delete File</button>
+            </form>
+        {% endif %}
+
+
+            <form action="{% url 'comment' %}" method="POST" id="add_comment_form">
+                {% csrf_token %}
+                <label for="comment">Comment:</label>
+                <textarea name="comment" id="comment" cols="15" rows="5"></textarea> <br>
+                <input type="hidden" name="note_title" id="note_title" value = "{{note_details.file_title}}">
+                <input type="hidden" name="subject"  id="subject" value = "{{note_details.subject}}">
+                <input type="submit" value="Add Comment" id="add_comment">
+            </form> <br>
+            
+            {% for each_comment in all_note_comments %} <!--AJAX RESPONSE-->
+                    <b>{{each_comment.commenter_name}}</b> <br>
+                    {{each_comment.comment}} <br> <br>
+                    
+                
+                {% if each_comment.commenter_name == user_full_name %}
+                    <form action="{% url 'delete_comment' %}" method="POST">
+                    {% csrf_token %}
+                        <input type="hidden" name="comment_id" value="{{each_comment.id}}"> 
+                        <input type="hidden" name="note_title" value = "{{note_details.file_title}}">
+                        <input type="hidden" name="subject" value = "{{note_details.subject}}">
+                        <input type="submit" value="DELETE">
+                    </form>
+                {% endif %}
+                
+            {% endfor %} <br>
+
+            <h2>How are you?</h1>
+            <button onclick="fn1()" id="click">Click Me</button>
+</body>
+
+
+<script src="{% static 'js/jquery-3.6.1.js' %}"></script>
+<script >
+    function fn1(){
+        $("h2").fadeToggle();
+    }
+</script>
+
+<script>
+    $('#add_comment').click(function(e){
+        e.preventDefault()
+
+        let comment = $('#comment').val();
+        let note_title = $('#note_title').val();
+        let subject = $('#subject').val();
+    
+        data = {
+            comment : comment,
+            note_title : note_title,
+            subject : subject,
+            csrfmiddlewaretoken : $('input[name = csrfmiddlewaretoken').val()
+        }
+
+        $.ajax({
+            url : "{% url 'comment' %}",
+            type : "POST",
+            data : data,
+            success : function(status){
+                console.log(status)
+                $("#add_comment_form")[0].reset()
+            } 
+
+    })
+})
+
+</script>
+        
+<script>
+    $("#delete_solution").click(function(e){
+        e.preventDefault()
+        
+        let assignment_solution_id = $("#assignment_solution_id").val();
+        let teacher_details = $("#teacher_details").val();
+        let file_title = $("#file_title").val()
+
+        data = {
+            assignment_solution_id : assignment_solution_id,
+            teacher_details : teacher_details,
+            file_title : file_title,
+            csrfmiddlewaretoken : $('input[name = csrfmiddlewaretoken').val()
+        }        
+        console.log(assignment_solution_id);
+        console.log(teacher_details);
+        console.log(file_title);
+
+
+        $.ajax({
+            url : "{% url 'delete_solution_file' %}",
+            type : "POST",
+            data : data,
+
+            success : function(status){
+                console.log(status)
+            }
+
+        })
+        
+    })
+
+
+</script>
+</html>

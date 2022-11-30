@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'js\jquery-3.6.1.js' %}">
+    <link rel="stylesheet" href="{% static 'js\jquery-ui.js' %}">
+    <link rel="stylesheet" href="{% static 'css\jquery-ui.css' %}">
+</head>
+<body>
+    {% if number_of_session < 1 %}
+        <h2>Pls create a session</h2> 
+
+    {% elif number_of_session >= 1%}
+        <h2> ADD NEW SESSION </h2> 
+    {% endif %}
+    <form action=" " method="POST">
+        {% csrf_token %}
+        <label for="session">Session:</label>
+        <input type="text" name="session" id="session" placeholder="2020-2021" required> <br>
+        
+        <label for="session_starts">Session Starts:</label>
+        <input type="text" name="session_starts" id="session_starts" placeholder="YYYY-MM-DD" required> <br>
+
+        <label for="session_ends">Session Ends:</label>
+        <input type="text" name="session_ends" id="session_ends" placeholder="YYYY-MM-DD" required> <br>
+
+        <label for="no_of_terms">No of Terms:</label>
+        <input type="number" name="no_of_terms" id="no_of_terms" placeholder="4" required> <br>
+
+        <input type="submit" value="Submit">
+    
+    </form>
+</body>
+<script src="{% static 'js/jquery-3.6.1.js' %}"></script>
+<script src="{% static 'js\jquery-ui.js' %}"></script>
+
+<script>
+    $("#session_starts").datepicker({
+        changeYear :true,
+        changeMonth : true,
+        dateFormat : 'yy-mm-dd'
+    })
+    $("#session_ends").datepicker({
+        changeYear :true,
+        changeMonth : true,
+        dateFormat : 'yy-mm-dd'
+    })
+</script>
+</html>

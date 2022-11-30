@@ -1,0 +1,84 @@
+{%load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'js\jquery-3.6.1.js' %}">
+    <link rel="stylesheet" href="{% static 'js\jquery-ui.js' %}">
+    <link rel="stylesheet" href="{% static 'css\jquery-ui.css' %}">
+</head>
+<body>
+    {{userName}} 
+    {% if userName.is_authenticated and userName.is_staff and userName.is_superuser %}
+    <a href="{% url 'unapprovedusers' %}">unapprovedusers</a> <br>
+        welcome admin <br>
+                           
+        <!--This next two lies is to view student or staff in the school-->
+        <a href="{% url 'allstudent' %}">Total no of student</a><br>
+        <a href="{% url 'allteacher' %}">Total no of teachers</a><br>
+        no_of_present_student:{{no_of_present_student}}<br>
+
+        no_of_absent_student:{{no_of_absent_student}} <br>   
+        <a href="{% url 'subjectlist'%}">Check all Subject </a> <br><br>
+
+        <a href="{% url 'session_info' %}">All Sessions</a> <br>
+
+
+    {% elif userName.is_authenticated and userName.position == 'STAFF' %}
+        welcome staff
+        <!--Staff can view this if authenticated by admin-->
+        {% if userName.is_staff%}
+        <p>Class Teacher: {{is_class_teacher}} </p>
+        latest_session : {{latest_session_and_term.session}} <br>
+        latest_term : {{latest_session_and_term.term}}
+
+            {% if is_class_teacher != "NONE"  %}
+                <a href="{% url 'attendance'  %}">Take attendance</a> <br>
+                <a href="{% url 'teacher_subjects' %}">View the subjects teaching</a> <br>                
+            {%endif%}
+        {% elif userName.is_staff == False %}
+        <p>You are yet to be authenticated</p>
+            {%endif%}
+
+    {% elif userName.is_authenticated and userName.position == 'STUDENT' %}
+        Welcome student
+        <!--Student can view this if authenticated by admin-->
+        {% if userName.is_student%}
+        welcome {{userName}} <br>
+        <a href="{% url 'subjectreview' %}">Review subject</a>
+        <a href="{% url 'student_subject' %}">My Subject Files</a>
+        latest_session : {{latest_session_and_term.session}} <br>
+        latest_term : {{latest_session_and_term.term}}
+        
+    
+        
+        {% elif userName.is_student == False %}
+        <p>You are yet to be authenticated</p>
+        {%endif%}
+
+    
+    {%elif userName.is_authenticated %}
+        Welcome is_authenticated
+
+       
+    {%endif%}
+</body>
+<script src="{% static 'js/jquery-3.6.1.js' %}"></script>
+<script src="{% static 'js\jquery-ui.js' %}"></script>
+
+<script>
+    $("#session_starts").datepicker({
+        changeYear :true,
+        changeMonth : true,
+        dateFormat : 'yy-mm-dd'
+    })
+    $("#session_ends").datepicker({
+        changeYear :true,
+        changeMonth : true,
+        dateFormat : 'yy-mm-dd'
+    })
+</script>
+</html>

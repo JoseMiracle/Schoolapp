@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% if messages %}
+        {% for message in messages %}
+            {{message}}
+        {% endfor %}
+    {% endif %}
+    <form method="POST">
+        {% csrf_token %}    
+            <label for="class_name"> ClassName</label>
+            <input type="text" name="class_name" id="class_name"><br>
+            {% for each_subject in all_school_subjects %}
+                <input type="checkbox" name="class_subjects" value="{{each_subject}}">{{each_subject}}
+            {%endfor%}
+            <br>
+            <input type="submit" value="SUBMIT">
+    </form>
+
+    
+
+</body>
+</html>

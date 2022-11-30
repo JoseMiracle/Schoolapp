@@ -1,0 +1,95 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'js\jquery-3.6.1.js' %}">
+    <link rel="stylesheet" href="{% static 'js\jquery-ui.js' %}">
+    <link rel="stylesheet" href="{% static 'css\jquery-ui.css' %}">
+</head>
+<body>
+    <!--USe Jquery to check if a file name exists-->
+    <form action="" method="POST" enctype="multipart/form-data" > <!--Using Javascript to predict what user wanna type-->
+        {% csrf_token %}
+
+        <p>Kind of file ?</p>
+        <div>
+        
+        <input type="radio" name="subject_file" id="subject_notes" value="subject_notes">
+        <label for="subject_notes">Subject Notes</label>
+        
+        <input type="radio" name="subject_file" id="assignment" value="assignment">
+        <label for="assignment">Assignment</label> <br> <br>
+
+        </div>
+        
+        <label for="title">Title</label>
+        <input type="text" name="title" id="title" placeholder="THE New Note"  required> <br>
+
+        <div id="deadline" hidden>
+            <label for="deadline_date">Assignment Deadline date:</label>
+            <input type="text" name = "date" class = "date"  readonly placeholder="YYYY-MM-DD" > <br>
+            <label for="deadline_time">Deadline Time:</label>
+            <input type="time" name="deadline_time" >
+        </div>
+
+        <label for="week">Choose Week:</label> 
+        <select name="week" id="week">
+            <option value="Week 1">WEEK 1</option>
+            <option value="Week 2">WEEK 2</option>
+            <option value="Week 3">WEEK 3</option>
+            <option value="Week 4">WEEK 4</option>
+            <option value="Week 5">WEEK 5</option>
+            <option value="Week 6">WEEK 6</option>
+            <option value="Week 7">WEEK 7</option>
+            <option value="Week 8">WEEK 8</option>
+            <option value="Week 9">WEEK 9</option>
+            <option value="Week 10">WEEK 10</option>
+            <option value="Week 11">WEEK 11</option>
+            <option value="Week 12">WEEK 12</option>
+            <option value="Week 13">WEEK 13</option>
+            <option value="Week 14">WEEK 14</option>
+            <option value="Week 15">WEEK 15</option>
+        </select><br><br>
+        <input type="hidden" name = "uploader_email" value="{{request.user.email}}">
+        <input type="file" name="subject_files"><br><br>
+       <input type="submit" value="UPLOAD FILES"> 
+    </form>
+    <br>
+        add subject files
+
+        <h2>How are you?</h1>
+            <button onclick="fn1()" id="click">Click Me</button>
+</body>
+
+<script src="{% static 'js/jquery-3.6.1.js' %}"></script>
+<script src="{% static 'js\jquery-ui.js' %}"></script>
+
+<script>
+    function fn1(){
+        $("h2").fadeToggle();
+    }
+</script>
+
+<script>
+    $("#assignment").click(function(){
+        $("#deadline").removeAttr("hidden").fadeIn()
+
+    })
+    $("#subject_notes").click(function(){
+        $("#deadline").fadeOut()
+        console.log(`faded-out`)
+    })
+</script>
+
+<script>
+    $(".date").datepicker({
+        dateFormat : 'yy-mm-dd',
+        changeMonth : true,
+        changeYear : true
+    })
+</script>
+</html>

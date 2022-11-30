@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <b><h2>{{assignment_details.file_title}}</h2></b>
+    
+    {% if request.user.is_student %}   
+            <!--This is for submitting solution file-->     
+            <form action="{% url 'assignment_solution_upload' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="assignment_title" value = "{{assignment_details.file_title}}">
+                <input type="hidden" name="subject" value = "{{assignment_details.subject}}">
+                <input type="hidden" name = 'teacher_email' value="{{assignment_details.teacher_details}}">
+                
+                {% if student_assignment.number_of_submission < 3 or student_assignment.number_of_submission == None  %}
+                    <label for="assignment_file">Upload Solution:</label><br>
+                    <input type="file" name="assignment_file" required> <br>
+                    <input type="submit" value="UPLOAD SOLUTION">
+                {% elif student_assignment.number_of_submission == 3 %}
+                    NO of uploads for <b>{{assignment_details.file_title}}</b>   exceeded    
+                {% endif %}
+            </form> <br>
+        
+        <label for="submission">Number Of Submission(s): {{student_assignment.number_of_submission}}</label> <br>
+        
+        {% if student_assignment.number_of_submission >= 1 %}
+            <label for="solution">Uploaded Solution:</label>
+            <a href="{{student_assignment.solution_file.url}}" target="blank">{{student_assignment.solution_file}}</a> <br>
+            <form action="{% url 'delete_solution_file' %}" method="POST" id="delete_form">
+                {% csrf_token %}
+                <input type="hidden" name="assignment_solution_id" id="assignment_solution_id" value="{{student_assignment.id}}">
+                <input type="submit" value="Delete Solution" id="delete_solution">
+            </form>
+        {% endif %}
+       
+
+
+
+        {% if student_assignment.score %}
+            <label for="">YOUR SCORE:</label>
+                {{student_assignment.score}}
+             <!--This is for deleting the submitted solution file-->
+        {% elif student_assignment.number_of_submission > 0 and student_assignment.score == None and student_assignment.solution_file == None %}
+            <!--This is to show the student his/her score -->
+            <label for="">YOUR SCORE:</label>
+            Yet to be graded
+        {% endif %}
+        
+        
+    {% elif request.user.is_staff %}
+    <a href="{% url 'assignment_solutions' assignment_details.subject assignment_details.file_title %}">View ALL Assignment Solutions</a>
+    {% endif %} <br> <br>
+</body>
+</html>

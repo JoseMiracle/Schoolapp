@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   
+{% for message in messages %}
+{{message}}
+{% endfor%}
+
+    {% if subject_notes.count > 0 or assignments.count > 0 %} <!--This check if there are subject notes or assignment in Subject Files-->
+        {% for week in non_duplicate_weeks %} <!--This loops out week then get each -->
+            {{week}} <br>
+            
+            {% if week in week_with_subject_notes %} <!--This checks if a particular week has a subject note -->
+            Subject Notes <br>
+                {% for note in subject_notes %}
+                    {% if note.week == week %} <!--This is too check if note week is equal to the week being looped out-->
+                       <a href="{% url 'note_full_view' note.subject note.file_title %}">{{note.file_title}} </a>  <br>
+                    {% endif %}
+                {% endfor %} 
+            {% elif week in week_without_subject_notes %}
+                    No Subject Notes 
+            {% endif %} <br>
+
+            {% if week in week_with_ass %}
+            Assignment <br>
+                {% for assignment in assignments %}
+                    {% if assignment.week == week %}
+                    <a href="{% url 'assignment_full_view' assignment.subject  assignment.file_title %}">{{assignment.file_title}}</a>
+             <br>
+                    {% endif %}
+                {% endfor %} <br>
+            {% elif week in week_without_ass %}
+                NO Assignment {{week}}
+            {% endif %}
+
+        {% endfor %} <br>
+        
+    {% elif subject_notes.count == 0 and assignments.count == 0 %}
+        NO subject_files
+    {% endif %}
+
+</body>
+</html>

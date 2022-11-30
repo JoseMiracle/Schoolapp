@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'js/jquery-3.6.1.js' %}">
+</head>
+<body>
+    {{assignment_details.subject}}
+    {{assignment_details.file_title}}
+   Number of submission: {{assignment_solutions.count}} of  {{no_of_student_to_teacher}} <br>
+    {% for solution in assignment_solutions %}
+            {{solution.student_email}} <br>
+            <a href="{{solution.solution_file.url}}">Download Solutions</a>  <br>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <label for="score">SCORE:</label>
+                <input type="number" name = "score" id = "score"><br>
+                <input type="hidden" name = "solution_id" value="{{solution.id}}" id="solution_id">
+                <input type="hidden" name="subject" value="{{assignment_details.subject}}" id="subject">
+                <input type="hidden" name = "file_title" value="{{assignment_details.file_title}}" id="file_title">
+                <input type="submit" value="SAVE SCORE" id="save_score">
+            </form> <br>
+    {% endfor %}
+
+    <h2>How are you?</h1>
+        <button onclick="fn1()" id="click">Click Me</button>
+
+</body>
+
+<script src="{% static 'js/jquery-3.6.1.js' %}"></script>
+<script >
+    function fn1(){
+        $("h2").fadeToggle();
+    }
+</script>
+
+<script>
+   
+
+    $("#save_score").click(function(e){
+        e.preventDefault()
+        
+        let score = $("#score").val();
+        let solution_id = $("#solution_id").val();
+        let subject = $("#subject").val();
+        let file_title = $("#file_title").val();
+        console.log(typeof(score));
+        console.log(solution_id);
+        
+        data = {
+            score : score,
+            name : name,
+            solution_id : solution_id,
+            subject : subject,
+            file_title : file_title,
+            csrfmiddlewaretoken : $('input[name = csrfmiddlewaretoken').val()
+        }
+        $.ajax({
+            url : "{% url 'assignment_solutions' assignment_details.subject assignment_details.file_title %}",
+            type : "POST",
+            data : data,
+            success : function(status){
+                console.log(status)
+            }
+        })
+    
+    })
+</script>
+</html>

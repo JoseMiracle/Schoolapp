@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% if subject_details %}
+        {% for each_week in all_week %}
+            {{each_week}} <br>
+            {% for each_subject in subject_details %}
+            {% if each_subject.subject_files == 'assignment'%}
+                {% if each_subject.week == each_week %}
+                    {{each_subject.subject_files}} <br>
+                {% endif %}
+            {% endfor %} <br>
+        {% endfor %} 
+    {% elif not subject_details %}
+        NO
+    {% endif %}
+    
+    subject = Subjects.objects.get(all_subjects = teacher_subject)
+    subject_notes = SubjectFile.objects.all().filter(teacher_details = email, subject = subject, kind_of_file = 'subject_notes')
+    assignments = SubjectFile.objects.filter(teacher_details = email, subject = subject , kind_of_file = 'assignment')
+    all_week = [note.week for note in subject_notes ]
+    
+    non_duplicate_weeks = []
+    for each_week in all_week:
+        if each_week in non_duplicate_weeks:
+            continue
+        else:
+            non_duplicate_weeks.append(each_week)
+    print(all_week)
+    print(non_duplicate_weeks)
+    print([subject for each_subject.subject_files in ])
+</body>
+</html>

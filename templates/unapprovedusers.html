@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% if userName.is_authenticated and userName.is_staff and userName.is_superuser %}
+  {{userName}} <br>
+        
+                {% for unApprovedUser in unApprovedUsers %}
+                    {%if unApprovedUser.position == 'STAFF'%}
+                        
+                        <form action="" method ="POST">
+                            {%csrf_token%}
+                            {{unApprovedUser.first_name}} {{unApprovedUser.position}}
+                            <input type="hidden" name="unapproveduser_id" value="{{unApprovedUser.id}}">{{unApprovedUser.id}} <br>
+                            {% for eachsubject in all_available_subject %}
+                                    <input type="checkbox" name="chosensubject" value="{{eachsubject}}">{{eachsubject}}
+                
+                            <br>
+                            {% endfor %}
+                            <input type="submit" value="Approve"><br> <br>        
+                        </form>
+                    {%elif unApprovedUser.position == 'STUDENT'%}
+
+    
+                    <form action="" method ="POST">
+                        {% csrf_token %}
+                        {{unApprovedUser.first_name}} {{unApprovedUser.position}}
+                        <input type="hidden" name="unapproveduser_id" value="{{unApprovedUser.id}}">{{unApprovedUser.id}} <br>
+                        <input type="submit" value="Approve"><br> <br>
+                        
+
+                    </form>
+
+                        
+                    {% endif %}
+
+                {% endfor %}
+    {% endif %}
+
+
+
+</body>
+</html>

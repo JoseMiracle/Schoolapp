@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <label for="announcement_details">Enter the announcement:</label> <br> 
+        <textarea name="announcement_details" id="announcement_details" cols="40" rows="10" required></textarea><br> <br>
+        
+        <label for="announcement_date">Start announcement</label>
+        <input type="date" name="announcement_date" id="announcement_date"><br>
+
+        <label for="announcement_deadline">End announcement</label>
+        <input type="date" name="announcement_deadline" id="announcement_deadline"> <br> <br>
+
+        <input type="submit" value="Schedule Announcement"> 
+    </form> <br> <br>
+
+    {% for each_scheduled_announcement in all_scheduled_announcements %}
+        {{each_scheduled_announcement}} <br>
+    {% endfor %}
+</body>
+</html>

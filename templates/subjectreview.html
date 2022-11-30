@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!--This shows the main,optional subjects and subjects to be added-->
+
+    <strong>MY COURSES</strong>  <br>
+    <form action="" method="POST">
+        {% csrf_token %}
+        
+            {% for each_major_subject in student_subjects %}
+                    {% if each_major_subject in class_subjects %}
+                        {{each_major_subject}} <br>
+                    {% elif each_major_subject not in class_subjects %}
+                            <input type="checkbox" name="to_be_removed_subjects" value="{{each_major_subject}}">{{each_major_subject}}<br>
+                    {% endif %}
+            {%endfor%}
+            
+            <!--This checks if the number of subject chosen by student is not equal to the class subject -->
+            {% if student_subjects.count != class_subjects.count %}
+                <input type="submit" value="Remove Selected Subjects">
+            {% elif student_subjects.count == class_subjects.count %} 
+                    
+            {% endif %}
+                
+            <br> <br>
+
+
+            <!--This checks for other subjects to be added-->
+            {% if other_subjects %}
+                <strong>Other Subjects</strong> <br>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        
+                            {% for each_subject in other_subjects  %}
+                            <input type="checkbox" name = "to_be_added_subjects" value="{{each_subject}}">{{each_subject}}
+                            <br>
+                            {% endfor %}
+                            <input type="submit" value="Add Chosen Subjects To My Courses">
+                    </form>
+            {% endif %}
+                
+            
+
+</body>
+</html>

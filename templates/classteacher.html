@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Teachers</title>
+</head>
+<body>
+    <!--This section is for assigning each teacher to a class-->
+
+    
+    <form action="classteacher" method="POST" id="classteacher">
+        {% csrf_token %}
+        {% for eachstaff in staff %}
+            <label for="">{{eachstaff.name}}</label>
+            <label for="">{{eachstaff.id}}</label>
+            <input type="text" name="assignedClass" placeholder="Enter a class" id="">
+            <input type="hidden" name="staffid" value="{{eachstaff.id}}">
+            <input type="submit" value="Assign"  id="sub"> <br>
+            
+            <label id="change">change</label>
+            <button onclick="change()"></button>
+        {% endfor %}
+    </form>
+    
+</body> 
+<script>
+    $('#change').fadeToggle();
+</script>
+
+</html>

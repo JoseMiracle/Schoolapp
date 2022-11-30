@@ -1,0 +1,21 @@
+ DATE IS:{{time}}
+    {% if messages %}
+    {%for message in messages%}
+        {{message}}
+    {% endfor %}
+    {% endif %}
+{% for student in teacher_to_student%}
+    <form action="attendance" method="POST">
+        {% csrf_token %}
+        {{student.name}}
+        {{student.className}}
+        <input type="radio" name="is_present" value="present" required>Present
+        <input type="radio" name="is_present" value="absent" required>Absent
+        <input type="hidden" name="studentname" value="{{student.name}}">
+        <input type="hidden" name="classname" value="{{student.className}}">
+        <input type="submit" value="Submit" >
+
+    </form>
+{% endfor %} <br>
+
+    

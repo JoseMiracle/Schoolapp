@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+     {% for details in assignment_details %}
+        {{details.subject_files}}
+        <a href="{{details.subject_files.url}}"> Download</a>
+        
+    {% endfor %} <br> <br>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <label for="comment">Comment:</label>
+        <textarea name="comment" id="comment" cols="15" rows="5"></textarea> <br>
+        <input type="hidden" name="commenter_name" id="commenter_name" value="{{request.user.first_name}} {{request.user.last_name}}  {{request.user.other_name}}">
+        <input type="submit" value="POST COMMENT">
+    </form> <br>
+
+    {% for each_comment in all_comments %}
+            <b>{{each_comment.commenter_name}}</b> <br>
+             {{each_comment.comment}} <br> <br>
+    {% endfor %} <br>
+    
+</body>
+</html>

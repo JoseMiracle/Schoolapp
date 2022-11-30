@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="registration" method="POST" >
+        {% csrf_token %}
+        <label for="firstname">FIRSTNAME:</label>
+        <input type="text" name="firstname" id="firstname" required><br>
+    
+    
+        <label for="lastname">LASTNAME:</label>
+        <input type="text" name="lastname" id="lastname" required><br>
+
+        <label for="gender">GENDER:</label>
+        <select name="gender" id="gender">
+            <option value="MALE">MALE</option>
+            <option value="FEMALE">FEMALE</option>
+            <option value="OTHERS">OTHERS</option>
+        </select><br>
+        
+        <label for="email">EMAIL:</label>
+        <input type="email" name="email" id="email" required><br>
+    
+        <label for="password">PASSWORD:</label>
+        <input type="password" name="password" id="password" required><br>
+    
+        <label for="password1">PASSWORD1:</label>
+        <input type="password" name="password1" id="password1" required><br>
+
+        <label for="position">POSITION:</label>
+        <select name="position" id="position">
+            <option value="STAFF">STAFF</option>
+            <option value="STUDENT">STUDENT</option>
+        </select><br>
+        <label for="class">Class:</label>
+        <input type="text" name="class" id="class" ><br>
+        
+        <label for="residence">RESIDENCE:</label>
+        <input type="residence" name="residence" id="residence" required><br>
+
+        <label for="phoneno">PHONENO:</label>
+        <input type="phoneno" name="phoneno" id="phoneno" required><br>
+
+        <label for="othername">OTHERNAME:</label>
+        <input type="othername" name="othername" id="othername" ><br>
+
+    
+        <input type="submit" value="SUBMIT">
+    </form>
+    {% if messages %}
+        {% for message in messages  %}
+            {{message}}
+        {% endfor %}
+    {% endif %}
+        
+    
+</body>
+
+</html>

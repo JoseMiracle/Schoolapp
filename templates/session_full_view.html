@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'js\jquery-3.6.1.js' %}">
+    <link rel="stylesheet" href="{% static 'js\jquery-ui.js' %}">
+    <link rel="stylesheet" href="{% static 'css\jquery-ui.css' %}">
+</head>
+<body>
+    Session : {{current_session}} <br>
+    Starts: {{current_session.session_starts}} <br>
+    Number of term session should have : {{current_session.no_of_terms}} <br> <br>
+
+    <!--This is used for starting a session-->
+    <form action="" method="POST">
+        <a href="{% url 'start_session' current_session %}">Start Session</a>
+    </form>
+
+    <form action="" method="POST">
+        {% csrf_token %}
+        <label for="term">Enter Term </label>
+        <input type="text" name="new_term" id="new_term" placeholder="1" required> <br>
+
+        <input type="hidden" name="session" value="{{current_session.session}}" id="session">
+
+        <label for="term_starts">Term Starts:</label>
+        <input type="text" name="term_starts" id="term_starts" placeholder="YYYY-MM-DD" required> <br>
+
+        <label for="term_ends">Term Ends:</label>
+        <input type="text" name="term_ends" id="term_ends" placeholder="YYYY-MM-DD" required> <br>
+
+        <input type="submit" value="SAVE TERM" id="save_term">
+
+    </form> <br>
+<!--This checks if there is an active term-->
+{% if session_active_term == "None" %}
+Active Term: None
+
+{% elif session_active_term != "None" %}
+    Active term:{{session_active_term}}
+                
+{% endif %} <br> <br>
+
+
+<!--This is to checks if a session has a term-->
+{% if session_terms != "None" %}
+    {% for term in session_terms %}
+                Term : {{term}} <br>
+                Term starts : {{term.term_starts}} <br>
+                Term ends : {{term.term_ends}} <br> 
+
+
+            <!--This is used for starting a term-->
+            <form action="{% url 'start_term' term.id %}" method="POST" >
+                {% csrf_token %}
+                <button type="submit">start_term</button>
+            </form>
+
+            <form action= "{% url 'delete-term' term.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit"> Delete term</button>
+            </form> <br>
+
+    {% endfor %}
+{% elif session_terms == "None" %}
+        <h2>NO term for the session yet.</h2>
+{% endif %}
+    
+
+    
+
+
+</body>
+
+<script src="{% static 'js/jquery-3.6.1.js' %}"></script>
+<script src="{% static 'js\jquery-ui.js' %}"></script>
+<script>
+    $("#term_starts").datepicker({
+        changeMonth : true,
+        changeYear : true,
+        dateFormat : 'yy-mm-dd'
+    })
+
+    $("#term_ends").datepicker({
+        changeMonth : true,
+        changeYear : true,
+        dateFormat : 'yy-mm-dd'
+    })
+</script>
+
+<script>
+    $("#save_term").click(function(e){
+        e.preventDefault()
+
+       let new_term = $("#new_term").val();
+       let term_starts = $("#term_starts").val(); 
+       let term_ends = $("#term_ends").val();
+       let session = $("#session").val();
+
+       data = {
+        new_term : new_term,
+        term_starts : term_starts,
+        term_ends : term_ends,
+        session : session,
+        csrfmiddlewaretoken : $('input[name = csrfmiddlewaretoken').val()
+       }
+
+       $.ajax({
+        url : "{% url 'term' %}",
+        type : "POST",
+        data : data,
+        success : function(status){
+            console.log(status)
+        }
+       })
+    })    
+</script>
+</html>

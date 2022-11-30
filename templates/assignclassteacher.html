@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% for eachstaff in staff %}
+    <form action="assignclassteacher" method="POST" id="assignclassteacher">
+        {%csrf_token%}    
+            <label for="">{{eachstaff.name}}</label>
+            <input type="text" name="assignedClass" value="{{eachstaff.assignedClass}}">
+            <input type="hidden" name="staffId" value="{{eachstaff.id}}">{{eachstaff.id}} 
+            <input type="submit" value="ASSIGN"><br>
+    </form>
+    {% endfor %}
+    <br>
+    {% if messages %}
+        {% for message in messages %}
+            <h3>{{message}}</h2>
+        {% endfor %}
+    {% endif %}
+
+        <label id="name">Name</label>
+        <button onclick="change()">Click me</button>    
+</body>
+<script type="text/javascript" src="{% static 'js/jquery-3.6.0.js' %}"></script>
+<script> 
+    function change(){
+        $("#name").fadeToggle();
+    }
+</script>
+
+<!--<script type="text/javascript">
+    $(document).on('submit','#assignclassteacher',function(e){
+        e.preventDefault();
+
+        $.ajax({
+            type:"POST",
+            url:'/assignclassteacher',
+            data:{
+                assignedClass:$('#assignedClass').val(),
+                staffId:$('#')
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken ]').val(),
+            },
+            success:function(){
+                alert('saved')
+            }
+
+        }
+
+        )
+    })
+</script>-->
+</html>
