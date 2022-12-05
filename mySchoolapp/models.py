@@ -117,7 +117,7 @@ class StudentDetails(models.Model):
     #subject = models.ForeignKey(Subjects, on_delete = models.CASCADE)
     session = models.ForeignKey(SessionInfo, on_delete = models.CASCADE)
     student_class = models.CharField(max_length = 10)
-    teacher_details = models.ForeignKey(TeacherDetails, on_delete=models.CASCADE, null = True)
+    teacher_details = models.ForeignKey(TeacherDetails, on_delete = models.DO_NOTHING, null = True, blank = True)
     name = models.CharField(max_length = 100)
     email = models.EmailField(max_length = 300 , unique = True)
     subjects = models.ManyToManyField(Subjects, null = True, blank = True)
@@ -148,7 +148,7 @@ class Announcement(models.Model):#YYet to be completed
 
 class SubjectFile(models.Model):
     subject = models.ForeignKey(Subjects, on_delete = models.CASCADE)
-    teacher_details = models.ForeignKey(TeacherDetails, on_delete=models.CASCADE, to_field = 'email')
+    teacher_details = models.ForeignKey(TeacherDetails, on_delete = models.CASCADE, to_field = 'email')
     file_title = models.CharField(max_length = 200)
     kind_of_file = models.CharField(max_length = 20)
     week = models.CharField(max_length = 10)
@@ -172,6 +172,8 @@ class Comments(models.Model):
 
     def __str__(self):
         return self.comment
+
+
 class AssignmentSolution(models.Model):
     subject_file = models.ForeignKey(SubjectFile, on_delete = models.CASCADE)
     student_email = models.CharField(max_length = 100)

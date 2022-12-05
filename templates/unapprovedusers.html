@@ -16,13 +16,17 @@
                         <form action="" method ="POST">
                             {%csrf_token%}
                             {{unApprovedUser.first_name}} {{unApprovedUser.position}}
-                            <input type="hidden" name="unapproveduser_id" value="{{unApprovedUser.id}}">{{unApprovedUser.id}} <br>
+                            <input type="hidden" name="unapproveduser_id" value="{{unApprovedUser.id}}"> <br>
                             {% for eachsubject in all_available_subject %}
                                     <input type="checkbox" name="chosensubject" value="{{eachsubject}}">{{eachsubject}}
-                
                             <br>
                             {% endfor %}
-                            <input type="submit" value="Approve"><br> <br>        
+                            {% if number_of_sessions == 0 %}
+                                 <h3>Pls <a href="{% url 'create_session' %}">Create Session</a> to be able to authenticate user </h3>
+                            {% elif number_of_sessions > 0 %}
+                                <input type="submit" value="Approve"><br> <br>
+                            {% endif %}
+       
                         </form>
                     {%elif unApprovedUser.position == 'STUDENT'%}
 
@@ -30,10 +34,14 @@
                     <form action="" method ="POST">
                         {% csrf_token %}
                         {{unApprovedUser.first_name}} {{unApprovedUser.position}}
-                        <input type="hidden" name="unapproveduser_id" value="{{unApprovedUser.id}}">{{unApprovedUser.id}} <br>
-                        <input type="submit" value="Approve"><br> <br>
-                        
+                        <input type="hidden" name="unapproveduser_id" value="{{unApprovedUser.id}}"> <br>
+                        {% if number_of_sessions == 0 %}
+                           <h2>ADD SESSION</h2>
+                        {% elif number_of_sessions > 0 %}
+                            <input type="submit" value="Approve"><br> <br>
+                        {% endif %}
 
+    
                     </form>
 
                         

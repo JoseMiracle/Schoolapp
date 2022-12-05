@@ -24,7 +24,7 @@
         no_of_absent_student:{{no_of_absent_student}} <br>   
         <a href="{% url 'subjectlist'%}">Check all Subject </a> <br><br>
 
-        <a href="{% url 'session_info' %}">All Sessions</a> <br>
+        <a href="{% url 'school_sessions' %}">All Sessions</a> <br>
 
 
     {% elif userName.is_authenticated and userName.position == 'STAFF' %}
@@ -32,8 +32,8 @@
         <!--Staff can view this if authenticated by admin-->
         {% if userName.is_staff%}
         <p>Class Teacher: {{is_class_teacher}} </p>
-        latest_session : {{latest_session_and_term.session}} <br>
-        latest_term : {{latest_session_and_term.term}}
+        Session : {{current_session}} <br>
+        Term : {{current_term}}
 
             {% if is_class_teacher != "NONE"  %}
                 <a href="{% url 'attendance'  %}">Take attendance</a> <br>
@@ -49,10 +49,10 @@
         {% if userName.is_student%}
         welcome {{userName}} <br>
         <a href="{% url 'subjectreview' %}">Review subject</a>
-        <a href="{% url 'student_subject' %}">My Subject Files</a>
-        latest_session : {{latest_session_and_term.session}} <br>
-        latest_term : {{latest_session_and_term.term}}
-        
+        <a href="{% url 'student_subject' %}">My Subject Files</a> <br>
+        Session : {{current_session}} <br>
+        Term : {{current_term}}
+
     
         
         {% elif userName.is_student == False %}

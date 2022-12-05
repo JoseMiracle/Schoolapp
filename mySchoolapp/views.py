@@ -71,7 +71,8 @@ def login(request):
 #This view is to Welcomes user.
 def welcome(request):
     #print(ClassesAndSubject.objects.get(class_name = 'SS1').class_major_subjects.all())
-    #current_session = 
+    current_session = SessionInfo.objects.get(is_session_active = True)
+    current_term = Terms.objects.get(active_term = True)
     email = request.user.email
     userName = NewUser.objects.get(email = email)
     unApprovedUsers = NewUser.objects.all().filter(is_staff = False, is_student = False)  
@@ -96,6 +97,8 @@ def welcome(request):
         'no_of_present_student' : no_of_present_student,
         'no_of_absent_student' : no_of_absent_student,
         'all_available_subject' : all_available_subject, 
+        'current_session' : current_session,
+        'current_term' : current_term
         }
     return render(request,'welcome.html', context)
 
@@ -113,17 +116,41 @@ def create_session(request):
             session_ends = session_ends,
             no_of_terms = no_of_terms,
         )
-        return redirect('session_info')
+        return redirect('school_sessions' )
 
     number_of_session = SessionInfo.objects.all().count()
     context = {
         'number_of_session' : number_of_session
     }
     return render(request, 'create_session_page.html', context)
+#This is used in starting session
+def start_session(request, session_id):
+    ##This is used in deactivating any pre-existing active term 
+    def deactivation_of_active_session():
+        if SessionInfo.objects.filter(is_session_active = True):
+            existing_session = SessionInfo.objects.get(is_session_active = True)
+            existing_session.active_session = False
+            existing_session.save()
+            return True
 
-def start_session(request):
-    ...    
-##This is view the whole session created
+        else:
+            return False
+    #Then activates other session created
+    if deactivation_of_active_session() == True:
+        sessionId = SessionInfo.objects.get(id = session_id)
+        sessionId.is_session_active = True
+        sessionId.save()
+        return redirect('session_full_view', sessionId)
+    
+    ##This activate a first or new session created on the web 
+    else:
+        sessionId = SessionInfo.objects.get(id = session_id)
+        sessionId.is_session_active = True
+        sessionId.save()
+        return redirect('session_full_view', sessionId)
+    
+    
+#This is view the whole session created
 def session_info(request): 
     number_of_session = SessionInfo.objects.all().count()
     if number_of_session >= 1:
@@ -183,7 +210,11 @@ def term(request): ##This is used in creating a term
         session = request.POST['session']
         current_session = SessionInfo.objects.get(session = session)
 
-        session_term = Terms.objects.create(session = current_session, term = new_term, term_starts = term_starts, term_ends = term_ends)
+        session_term = Terms.objects.create(
+            session = current_session, term = new_term, 
+            term_starts = term_starts, 
+            term_ends = term_ends
+            )
         return JsonResponse({'status' : 'saved'})
 
  
@@ -198,7 +229,7 @@ def start_term(request, term_id): ##This is used in starting a term
     
             else:
                 return False
-    
+
     if deactivation_of_active_term() == True:
         termId = Terms.objects.get(id = term_id)
         termId.active_term = True
@@ -212,7 +243,6 @@ def start_term(request, term_id): ##This is used in starting a term
         termId.save()
         return redirect('session_full_view', termId.session)
         
-    
 
 def delete_term(request, term_id):
     term = Terms.objects.get(id = term_id)
@@ -221,7 +251,7 @@ def delete_term(request, term_id):
 
 
 
-#This is to approve major subjects for eachclasses
+#This is to approve major subjects for each classes
 def classes_and_subject(request):
     if request.method == 'POST':
         class_name = request.POST['class_name']
@@ -252,10 +282,12 @@ def classes_and_subject(request):
     return render(request, 'classes_and_subject.html', context)
 
 
+def approve_users(request, ):
+    ...
 #This is allows the admin to approve unauthorized staff or student
 def unapprovedusers(request):
     if request.method == 'POST':
-        session = Terms.objects.get(active_term = True).session
+        session = SessionInfo.objects.get(is_session_active = True)
         unapproved_id = request.POST['unapproveduser_id']
         selected_teacher_subjects = request.POST.getlist('chosensubject')  
 
@@ -265,9 +297,6 @@ def unapprovedusers(request):
         to_be_approveduser_residence = to_be_approveduser_id.residence
         user_slug = '-'.join(to_be_approveduser_fullname.split(' ', 3)) #This is to have a slug
 
-
-        print(to_be_approveduser_email)
-    
         #This confirm that to_be_approved user is a staff
         if to_be_approveduser_id.position == 'STAFF':
             to_be_approveduser_id.is_staff = True
@@ -287,28 +316,38 @@ def unapprovedusers(request):
                 each_subject_id = Subjects.objects.get(all_subjects = each_subject)
                 teacher.subjects.add(each_subject_id)
             
-        
+
         elif to_be_approveduser_id.position == 'STUDENT':
             student_class = to_be_approveduser_id.student_class
-            student_class_and_subject = ClassesAndSubject.objects.get(class_name = student_class)
-            student_class_teacher = TeacherDetails.objects.get(assignedClass__iexact = student_class)
+            #student_class_and_subject = ClassesAndSubject.objects.get(class_name = student_class)
+          
+           
+            #This is to check if the student has a class teacher already
+            def is_student_class_teacher():
+                if TeacherDetails.objects.filter(assignedClass__iexact = student_class).exists():
+                    student_class_teacher = TeacherDetails.objects.get(assignedClass__iexact = student_class)
+                    return student_class_teacher
+                
+                else:
+                    return None
+
             to_be_approveduser_id.is_student = True
             major_class_subjects = ClassesAndSubject.objects.get(class_name = student_class).class_major_subjects.all()
-            #to_be_approveduser_id.save()
+            #to_be_approveduser_id.save() 
 
             new_student = StudentDetails.objects.create(
                 session = session,
                 student_class = student_class,
                 name = to_be_approveduser_fullname,
                 email = to_be_approveduser_email,
-                teacher_details = student_class_teacher,
+                teacher_details = is_student_class_teacher(),
                 student_residence = to_be_approveduser_residence,
                 student_slug = user_slug
             )
 
             for each_major_class_subject in major_class_subjects:
                 new_student.subjects.add(each_major_class_subject)
-                  
+                           
         to_be_approveduser_id.save()
         return redirect('unapprovedusers')
     
@@ -316,11 +355,13 @@ def unapprovedusers(request):
     userName = NewUser.objects.get(email = email)
     unApprovedUsers = NewUser.objects.all().filter(is_staff = False, is_student = False)
     all_available_subject = Subjects.objects.all()        
-        
+    number_of_sessions = SessionInfo.objects.count()
+
     context = {
         'all_available_subject':all_available_subject,
         'userName':userName,
-        'unApprovedUsers': unApprovedUsers
+        'unApprovedUsers': unApprovedUsers,
+        'number_of_sessions' : number_of_sessions 
     }
 
     return render(request, 'unapprovedusers.html', context) 
@@ -343,7 +384,14 @@ def subjectlist(request):
             return redirect('subjectlist')
     
     all_available_subject = Subjects.objects.all()
-    return render(request,'subjectlist.html',{'all_available_subject':all_available_subject})
+    return render(request,'school-subjects.html',{'all_available_subject':all_available_subject})
+
+
+def remove_subject(request, subject):
+    if request.method =='POST':
+        subject = Subjects.objects.get(id = subject)
+        subject.delete()
+        return redirect('subjectlist')
 
 
 #This return the details of all student in a school
@@ -366,7 +414,7 @@ def assignclassteacher(request):
         if TeacherDetails.objects.filter(assignedClass = assignedClass).exists():
             messages.info(request,f'Class {assignedClass} already assigned to a teacher')
             return redirect ('assignclassteacher')
-
+    
         staffId = request.POST['staffId']
         thisstaff = TeacherDetails.objects.get(pk = int(staffId))
         thisstaff.assignedClass = assignedClass

@@ -19,11 +19,14 @@
     </form>
 
     {% for subject in all_available_subject %}
-        {{subject}} <br>
+        {{subject}}
+        <!--This is used in deleting subject-->
+        <form action="{% url 'remove-subject' subject.id %}" method="POST"> 
+            {% csrf_token %}
+            <button>Delete Subject</button>
+        </form>
     {% endfor %}
    
-    <!-- 
-    
-    -->
+
 </body>
 </html>

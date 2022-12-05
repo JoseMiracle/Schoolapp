@@ -17,7 +17,7 @@
 
     <!--This is used for starting a session-->
     <form action="" method="POST">
-        <a href="{% url 'start_session' current_session %}">Start Session</a>
+        <a href="{% url 'start_session' current_session.id %}">Start Session</a>
     </form>
 
     <form action="" method="POST">
